@@ -1,16 +1,14 @@
 import { drizzle } from 'drizzle-orm/libsql';
-import { createClient } from '@libsql/client';
+import { createClient, type Client } from '@libsql/client';
 import * as schema from './schema.js';
 
+export function createDb(url: string, authToken: string) {
+  const client = createClient({ url, authToken });
+  const db = drizzle(client, { schema });
+  return { db, client };
+}
 
-// For query purposes
-const client = createClient({
-  url: process.env.DATABASE_URL!,
-  authToken: process.env.DATABASE_AUTH_TOKEN!
-});
+// Export the schema for convenience
+export * from './schema.js';
 
-export const db = drizzle(client, { schema });
-
-// Export the libsql client for advanced use cases
-export { client };
 
